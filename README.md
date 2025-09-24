@@ -1,233 +1,260 @@
-# 🏠 HUSSERVER - COMPLETE PORTAINER SETUP GUIDE
+# 🏠 Husserver - Unified Smart Home & Industrial Infrastructure
 
-## 📋 Portainer Stack Creation Order
+Modern containerized infrastructure for smart home, industrial automation, media management, and development services. Optimized for resource efficiency with unified database architecture.
 
-**IMPORTANT**: Create stacks in this exact order due to dependencies!
+## 📋 System Overview
 
-### 1. **Infrastructure Stack** (MUST BE FIRST!)
-- **Stack Name**: `husserver-infrastructure`
-- **Compose File**: [infrastructure-compose.yml](infrastructure-compose.yml)
-- **Environment Variables**: [portainer-infrastructure-env.txt](portainer-infrastructure-env.txt)
+This repository contains Docker Compose configurations for a complete home server setup, consolidating multiple services under a unified infrastructure to minimize resource usage and simplify management.
 
-### 2. **Media Storage Stack**
-- **Stack Name**: `husserver-media-storage`
-- **Compose File**: [media-storage-compose.yml](media-storage-compose.yml)
-- **Environment Variables**: [portainer-media-storage-env.txt](portainer-media-storage-env.txt)
+### 🎯 Design Philosophy
+- **Resource Efficiency**: Single MariaDB instance serves multiple applications
+- **Centralized Management**: Unified admin tools and monitoring
+- **Modular Architecture**: Independent stacks for different service categories
+- **External Integration**: Designed to work with external Home Assistant and cloud services
 
-### 3. **Smart Home Stack**
-- **Stack Name**: `husserver-smart-home`
-- **Compose File**: [smart-home-compose.yml](smart-home-compose.yml)
-- **Environment Variables**: [portainer-smart-home-env.txt](portainer-smart-home-env.txt)
+## 🏗️ Infrastructure Components
 
-### 4. **Industrial Stack**
-- **Stack Name**: `husserver-industrial`
-- **Compose File**: [industrial-compose.yml](industrial-compose.yml)
-- **Environment Variables**: [portainer-industrial-env.txt](portainer-industrial-env.txt)
+### **Core Infrastructure**
+- **MariaDB 11.4** - Unified database for web applications
+- **TimescaleDB pg16** - Time-series database for Home Assistant integration
+- **Redis Alpine** - Caching and session storage
+- **phpMyAdmin** - MariaDB administration interface
+- **pgAdmin** - TimescaleDB administration interface
+- **Redis Commander** - Redis management interface
 
-### 5. **Utilities Stack**
-- **Stack Name**: `husserver-utilities`
-- **Compose File**: [utilities-compose.yml](utilities-compose.yml)
-- **Environment Variables**: [portainer-utilities-env.txt](portainer-utilities-env.txt)
+### **Media & Storage**
+- **PhotoPrism** - AI-powered photo management and organization
+- **Jellyfin** - Media server for movies, TV shows, and music
+- **FileBrowser** - Web-based file management interface
+- **Jottacloud Sync** - Cloud storage synchronization
 
-### 6. **Network Stack**
-- **Stack Name**: `husserver-network`
-- **Compose File**: [network-compose.yml](network-compose.yml)
-- **Environment Variables**: [portainer-network-env.txt](portainer-network-env.txt)
+### **Smart Home Services**
+- **EMQX** - MQTT broker for IoT device communication
+- **Scrypted** - Video management and camera integration
 
-### 7. **Gaming Stack** (Optional - Last)
-- **Stack Name**: `husserver-gaming`
-- **Compose File**: [gaming-compose.yml](gaming-compose.yml)
-- **Environment Variables**: [portainer-gaming-env.txt](portainer-gaming-env.txt)
+### **Industrial Automation**
+- **Ignition SCADA** - Industrial automation and HMI platform
+- **OPC UA Server** - Industrial communication protocol server
+- **Modbus Gateway** - Legacy device integration
 
----
+### **Development & Utilities**
+- **Code Server** - Browser-based VS Code development environment
+- **RustDesk** - Self-hosted remote desktop solution
+- **Watchtower** - Automatic container updates
+- **Dozzle** - Real-time Docker log viewer
+- **Uptime Kuma** - Service monitoring and alerting
+- **Duplicati** - Automated backup solution
 
-## 🔧 Portainer Setup Steps
+### **Network & Proxy**
+- **Nginx Proxy Manager** - Reverse proxy with SSL management
+- **Fail2Ban** - Intrusion prevention and security
+- **Cloudflared** - Secure tunnel for external access
+- **DDNS Updater** - Dynamic DNS management
 
-### Step 1: Create External Volumes
-Before creating any stacks, create these external volumes in Portainer:
+### **Gaming Servers**
+- **Minecraft Creative** - Creative mode server for building
+- **Minecraft Survival** - Survival mode server for gameplay
+- **Minecraft Friends** - Private server for friends
+- **BeamNG.drive MP** - Multiplayer racing server
 
-```bash
-# Infrastructure volumes
-mariadb-unified-data
-timescaledb-unified-data
-redis-unified-data
-pgadmin-data
+## 🌐 Service Access Points
 
-# Media storage volumes
-nextcloud-data
-nextcloud-apps
-nextcloud-config
-nextcloud-files
-photoprism-originals
-photoprism-storage
-photoprism-import
-filebrowser-config
-filebrowser-data
+| Service | URL | Purpose | Default Credentials |
+|---------|-----|---------|-------------------|
+| **Database Admin** | | | |
+| phpMyAdmin | http://localhost:8787 | MariaDB administration | root / *configured* |
+| pgAdmin | http://localhost:5050 | TimescaleDB administration | *configured* |
+| Redis Commander | http://localhost:8081 | Redis management | *configured* |
+| **Media Services** | | | |
+| PhotoPrism | http://localhost:2342 | Photo management | *configured* |
+| Jellyfin | http://localhost:8096 | Media streaming | Setup required |
+| File Browser | http://localhost:8082 | File management | admin / admin |
+| **Smart Home** | | | |
+| EMQX Dashboard | http://localhost:18083 | MQTT broker management | *configured* |
+| **Industrial** | | | |
+| Ignition Gateway | http://localhost:9088 | SCADA platform | *configured* |
+| **Development** | | | |
+| Code Server | https://localhost:8444 | Web IDE | *configured* |
+| Dozzle | http://localhost:8888 | Docker logs | *configured* |
+| Uptime Kuma | http://localhost:3001 | Service monitoring | Setup required |
+| **Network** | | | |
+| Nginx Proxy Manager | http://localhost:81 | Reverse proxy admin | Setup required |
+| **Gaming** | | | |
+| Minecraft Creative | `localhost:25565` | Game server | Whitelist required |
+| Minecraft Survival | `localhost:25566` | Game server | Whitelist required |
+| Minecraft Friends | `localhost:25567` | Game server | Whitelist required |
+| BeamNG Multiplayer | `localhost:30814` | Game server | - |
 
-# Smart home volumes
-emqx-data
-emqx-etc
-emqx-log
-scrypted-data
-scrypted-nvr
-homeassistant-config
+## 🗄️ Database Architecture
 
-# Industrial volumes
-ignition-data
-ignition-logs
-envision-data
-envision-logs
-envision-config
-opcua-config
-opcua-data
-modbus-config
+### **MariaDB Databases**
+- `photoprism` - Photo metadata and AI recognition data
+- `ignition` - SCADA projects and industrial automation data
+- `husserver` - General application data
+- `nginxpm` - Nginx Proxy Manager configuration
 
-# Utilities volumes
-codeserver-config
-codeserver-workspace
-rustdesk-hbbs
-rustdesk-hbbr
-uptime-kuma-data
-homer-config
-duplicati-config
-duplicati-backups
+### **TimescaleDB Databases**
+- `homeassistant` - External Home Assistant time-series data
+- `prometheus` - Metrics and monitoring data (via Prometheus adapter)
 
-# Network volumes
-nginx-data
-nginx-letsencrypt
-nginx-logs
-fail2ban-config
-fail2ban-log
-authelia-config
-ddns-data
-
-# Gaming volumes (if used)
-minecraft-creative-data
-minecraft-creative-mods
-minecraft-survival-data
-minecraft-survival-mods
-minecraft-friends-data
-minecraft-friends-mods
-beammp-data
-beammp-config
-beammp-logs
-pterodactyl-data
-game-stats-data
+### **External Connections**
+Home Assistant running on dedicated hardware connects to:
+```yaml
+recorder:
+  db_url: "postgresql://homeassistant:password@[SERVER_IP]:5432/homeassistant"
 ```
 
-### Step 2: Create External Networks
-Create these networks in Portainer:
+## 📊 Resource Optimization
 
-```bash
-infrastructure-network
+### **Consolidated vs. Previous Setup**
+- **Database Containers**: 5 → 2 (60% reduction)
+- **Memory Usage**: ~1.5GB → ~600MB (900MB saved)
+- **Management Complexity**: Multiple separate systems → Unified infrastructure
+- **Port Conflicts**: Resolved through proper network isolation
+- **Backup Strategy**: Multiple separate → Single coordinated approach
+
+### **Service Dependencies**
+```mermaid
+graph TD
+    A[Infrastructure Stack] --> B[Media Storage Stack]
+    A --> C[Smart Home Stack]
+    A --> D[Industrial Stack]
+    A --> E[Utilities Stack]
+    A --> F[Network Stack]
+    A --> G[Gaming Stack]
+    
+    H[External Home Assistant] --> A
+    I[Jottacloud] --> B
 ```
 
-### Step 3: Create Stacks
+## 🔧 Technical Specifications
 
-For each stack:
+### **System Requirements**
+- **OS**: Linux with Docker and Docker Compose
+- **RAM**: Minimum 4GB, recommended 8GB+
+- **Storage**: 50GB+ for containers, additional space for media
+- **Network**: Static IP recommended for external Home Assistant connection
+- **Ports**: See individual compose files for complete port mapping
 
-1. **Go to Stacks** → **Add Stack**
-2. **Enter Stack Name** (use names from list above)
-3. **Select "Upload"** and upload the corresponding compose file
-4. **Copy environment variables** from corresponding .txt file
-5. **Paste into Environment Variables section**
-6. **CUSTOMIZE ALL PASSWORDS** - Replace placeholder passwords!
-7. **Deploy the stack**
+### **Security Features**
+- Environment variable isolation for credentials
+- Network segmentation between stacks
+- Fail2Ban intrusion prevention
+- SSL termination via Nginx Proxy Manager
+- Container health monitoring
+
+### **Backup Strategy**
+- Database dumps via automated scripts
+- Volume snapshots for persistent data
+- Jottacloud integration for off-site storage
+- Duplicati for comprehensive backup automation
+
+## 📁 Repository Structure
+
+```
+husserver/
+├── infrastructure/
+│   ├── docker-compose.yml
+│   ├── init-scripts/
+│   └── configs/
+├── media-storage/
+│   └── docker-compose.yml
+├── smart-home/
+│   └── docker-compose.yml
+├── industrial/
+│   └── docker-compose.yml
+├── utilities/
+│   └── docker-compose.yml
+├── network/
+│   └── docker-compose.yml
+├── gaming/
+│   └── docker-compose.yml
+├── portainer-configs/
+│   ├── infrastructure-env.txt
+│   ├── media-env.txt
+│   └── [other environment files]
+├── docs/
+│   ├── INSTALL.md
+│   └── TROUBLESHOOTING.md
+└── README.md
+```
+
+## 🚀 Quick Start
+
+1. **Prerequisites**: Install Docker, Docker Compose, and Portainer
+2. **Clone repository**: `git clone [your-repo-url]`
+3. **Follow installation guide**: See [INSTALL.md](docs/INSTALL.md) for detailed setup
+4. **Configure credentials**: Update environment variables in Portainer
+5. **Deploy stacks**: Start with infrastructure, then other services
+
+## 🎯 Use Cases
+
+### **Home Automation**
+- MQTT broker for IoT devices
+- External Home Assistant database
+- Camera management via Scrypted
+- Energy monitoring and automation
+
+### **Industrial Applications**
+- SCADA systems with Ignition
+- OPC UA device communication
+- Process monitoring and control
+- Industrial data visualization
+
+### **Media Management**
+- Photo organization with AI
+- Media streaming with Jellyfin
+- Cloud storage synchronization
+- File management interface
+
+### **Development Environment**
+- Browser-based code editing
+- Container log monitoring
+- Service health monitoring
+- Remote access capabilities
+
+### **Gaming & Entertainment**
+- Multiple Minecraft servers
+- Racing game multiplayer
+- Automated server management
+- Friend and family access
+
+## 🔗 Integration Points
+
+### **External Home Assistant**
+- TimescaleDB connection for recorder
+- LTSS (Long Time State Storage) integration
+- MQTT broker connection
+- Energy data persistence
+
+### **Cloud Services**
+- Jottacloud for file synchronization
+- Cloudflare for secure external access
+- Dynamic DNS for domain management
+- External monitoring services
+
+### **Local Network**
+- DHCP integration for device discovery
+- Network storage access
+- VPN compatibility
+- Local DNS resolution
+
+## 📚 Documentation
+
+- **[Installation Guide](docs/INSTALL.md)** - Complete setup instructions
+- **[Troubleshooting](docs/TROUBLESHOOTING.md)** - Common issues and solutions
+- **[Configuration Examples](docs/EXAMPLES.md)** - Sample configurations
+- **[Backup & Recovery](docs/BACKUP.md)** - Data protection strategies
+
+## 🤝 Contributing
+
+This is a personal infrastructure setup, but suggestions and improvements are welcome via issues and pull requests.
+
+## 📄 License
+
+This project is provided as-is for educational and personal use.
 
 ---
 
-## 🔐 Security Checklist
-
-**CRITICAL**: Before deploying, replace ALL placeholder passwords:
-
-### Infrastructure Stack:
-- [ ] `MYSQL_ROOT_PASSWORD`
-- [ ] `TIMESCALE_PASSWORD`
-- [ ] `REDIS_PASSWORD`
-- [ ] `NEXTCLOUD_DB_PASSWORD`
-- [ ] `IGNITION_DB_PASSWORD`
-- [ ] `PHOTOPRISM_DB_PASSWORD`
-- [ ] `GRAFANA_DB_PASSWORD`
-- [ ] `HUSSERVER_DB_PASSWORD`
-- [ ] `PROMETHEUS_DB_PASSWORD`
-- [ ] `PGADMIN_PASSWORD`
-- [ ] `REDIS_COMMANDER_PASSWORD`
-
-### Application Stacks:
-- [ ] All `*_ADMIN_PASSWORD` variables
-- [ ] All `*_PASSWORD` variables
-- [ ] API keys and tokens
-
----
-
-## 🌐 Access Points After Setup
-
-| Service | URL | Stack |
-|---------|-----|-------|
-| **Databases** | | |
-| phpMyAdmin | http://localhost:8787 | Infrastructure |
-| pgAdmin | http://localhost:5050 | Infrastructure |
-| Redis Commander | http://localhost:8081 | Infrastructure |
-| **Media** | | |
-| Nextcloud | http://localhost:8080 | Media Storage |
-| PhotoPrism | http://localhost:2342 | Media Storage |
-| File Browser | http://localhost:8082 | Media Storage |
-| **Smart Home** | | |
-| EMQX Dashboard | http://localhost:18083 | Smart Home |
-| Home Assistant | http://localhost:8123 | Smart Home |
-| **Industrial** | | |
-| Ignition Gateway | http://localhost:9088 | Industrial |
-| Envision SCADA | http://localhost:8090 | Industrial |
-| **Utilities** | | |
-| Code Server | http://localhost:8444 | Utilities |
-| Dozzle Logs | http://localhost:8888 | Utilities |
-| Uptime Kuma | http://localhost:3001 | Utilities |
-| Homer Dashboard | http://localhost:8081 | Utilities |
-| Duplicati Backup | http://localhost:8200 | Utilities |
-| **Network** | | |
-| Nginx Proxy Manager | http://localhost:81 | Network |
-
----
-
-## 🎯 Resource Savings Summary
-
-| Metric | Before | After | Savings |
-|--------|--------|-------|---------|
-| **MariaDB instances** | 4 | 1 | **75%** |
-| **RAM usage (DB)** | ~1.2GB | ~350MB | **850MB** |
-| **Compose files** | 14 | 6 | **57%** |
-| **Port conflicts** | Multiple | None | ✅ |
-| **Management complexity** | High | Low | ✅ |
-
----
-
-## 🆘 Troubleshooting
-
-### Stack Won't Start:
-1. Check if infrastructure stack is running first
-2. Verify all external volumes exist
-3. Check environment variables for typos
-4. Ensure no port conflicts
-
-### Database Connection Issues:
-1. Verify infrastructure stack is healthy
-2. Check database passwords match between stacks
-3. Ensure networks are created and connected
-
-### Can't Access Services:
-1. Check if containers are running: Containers view in Portainer
-2. Verify port mappings in compose files
-3. Check firewall settings on host
-
----
-
-## 📚 Additional Resources
-
-- **Logs**: View in Portainer → Containers → Select container → Logs
-- **Console**: Access container console in Portainer
-- **Health**: Monitor in Portainer → Stacks view
-- **Updates**: Use Watchtower (in Utilities stack) for automatic updates
-
----
-
-**🎉 Enjoy your new unified, efficient Husserver setup!**
+*Last updated: September 2025*  
+*Infrastructure version: 2.0 (Optimized)*
